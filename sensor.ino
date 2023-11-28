@@ -13,6 +13,7 @@ const char *password = "Qotb1172";
 const char *serverUrl = "http://172.105.66.220:5000/update_sensor_data";
 
 void setup() {
+  dht.begin();
   lcd.init();                      // initialize the lcd 
   lcd.backlight();
   Serial.begin(9600);
