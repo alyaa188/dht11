@@ -26,6 +26,7 @@ void setup() {
 }
 
 void loop() {
+  Wire.begin(D2, D1);
   float h = dht.readHumidity();
   float t = dht.readTemperature();
   lcd.setCursor(0,0);
