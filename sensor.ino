@@ -1,12 +1,21 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+#include <DHT.h>
+
+DHT dht(D3, DHT11); //(sensor pin,sensor type)
+
+LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 const char *ssid = "realme 8";
 const char *password = "Qotb1172";
 const char *serverUrl = "http://172.105.66.220:5000/update_sensor_data";
 
 void setup() {
-  Serial.begin(115200);
+  lcd.init();                      // initialize the lcd 
+  lcd.backlight();
+  Serial.begin(9600);
   WiFi.begin(ssid, password);
   pinMode(2, OUTPUT);
   while (WiFi.status() != WL_CONNECTED) {
@@ -17,6 +26,13 @@ void setup() {
 }
 
 void loop() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  lcd.setCursor(0,0);
+  lcd.print("Temp. : ");
+  lcd.print(t);
+  lcd.print("Hum. : ");
+  lcd.print(h);
   WiFiClient client;  // Create a WiFiClient object
   HTTPClient http;
   http.begin(client, serverUrl);  // Use begin(WiFiClient, url) here
@@ -39,27 +55,3 @@ void loop() {
   delay(5000);
   digitalWrite(2, LOW);  // Adjust the delay according to your needs
 }
-
-/*
-#include <Wire.h> 
-#include <LiquidCrystal_I2C.h>
-#include <DHT.h>
-
-DHT dht(D3, DHT11); //(sensor pin,sensor type)
-
-LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
-
-void setup()
-{
-  lcd.init();                      // initialize the lcd 
-  // Print a message to the LCD.
-  lcd.backlight();
-}
-void loop()
-{
-    float h = dht.readHumidity();
-    float t = dht.readTemperature();
-    lcd.setCursor(0,0);
-    lcd.print("Hello, world!");
-}
-*/
